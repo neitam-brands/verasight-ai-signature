@@ -80,12 +80,6 @@
                         <label class="block text-sm font-semibold mb-1" for="input-email">Email</label>
                         <input type="email" id="input-email" placeholder="kfanelli@verasight.ai" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all" oninput="updateSignature()">
                     </div>
-                    
-                    <div class="pt-4">
-                        <label class="block text-sm font-semibold mb-1 text-red-600">Logo Image URL (Advanced)</label>
-                        <p class="text-xs text-gray-500 mb-2">If the image is broken, paste the direct link (HTTPS) of the hosted company logo here.</p>
-                        <input type="text" id="input-logo" value="https://images.squarespace-cdn.com/content/v1/65a823e597148c279a528f80/38c11648-52c7-4340-9e6b-6f17e3f81e35/Logo+for+Site+Title.png" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all text-sm" oninput="updateSignature()">
-                    </div>
                 </form>
             </div>
 
@@ -102,7 +96,7 @@
                             <tr>
                                 <td style="padding-right: 20px; border-right: 2px solid #FF5C35; text-align: center; vertical-align: middle;">
                                     <img id="sig-logo" 
-                                         src="https://images.squarespace-cdn.com/content/v1/65a823e597148c279a528f80/38c11648-52c7-4340-9e6b-6f17e3f81e35/Logo+for+Site+Title.png" 
+                                         src="https://neitam-brands.github.io/verasight-ai-signature/a1ebfcb4-e9a5-42e9-8597-3d4d6110c5e7.Logo-removebg-preview-1.png" 
                                          alt="Verasight Logo" 
                                          width="140" 
                                          style="display: block; width: 140px; max-width: 140px; border: none; text-decoration: none;">
@@ -160,41 +154,14 @@
             </div>
         </div>
         
-        <!-- Instructions -->
-        <div class="mt-12 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
-            <h3 class="text-lg font-bold text-veraDarkBlue mb-4">How to install your signature:</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-                <div>
-                    <h4 class="font-bold text-veraBlue mb-2">Gmail</h4>
-                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
-                        <li>Click "Copy Signature" above.</li>
-                        <li>In Gmail, click the Settings (gear) icon > "See all settings".</li>
-                        <li>Scroll down to the "Signature" section and click "Create new".</li>
-                        <li>Paste (Ctrl+V / Cmd+V) into the text box.</li>
-                        <li>Save changes at the bottom of the page.</li>
-                    </ol>
-                </div>
-                <div>
-                    <h4 class="font-bold text-veraBlue mb-2">Apple Mail (Mac)</h4>
-                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
-                        <li>Click "Copy Signature" above.</li>
-                        <li>Open Mail > Preferences/Settings > Signatures.</li>
-                        <li>Create a new signature (+).</li>
-                        <li>Uncheck "Always match my default message font".</li>
-                        <li>Paste (Cmd+V) into the box (it might look slightly off here, but sends perfectly).</li>
-                    </ol>
-                </div>
-                <div>
-                    <h4 class="font-bold text-veraBlue mb-2">Outlook</h4>
-                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
-                        <li>Click "Copy Signature" above.</li>
-                        <li>In Outlook, go to File > Options > Mail > Signatures.</li>
-                        <li>Click "New".</li>
-                        <li>Paste (Ctrl+V / Cmd+V) into the edit area.</li>
-                        <li>If a paste options icon appears, choose "Keep Source Formatting".</li>
-                    </ol>
-                </div>
-            </div>
+        <!-- Simplified Instructions -->
+        <div class="mt-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+            <h3 class="text-lg font-bold text-veraDarkBlue mb-3">How to install your signature</h3>
+            <p class="text-sm text-gray-600">
+                <strong>1.</strong> Click "Copy Signature" above &nbsp; | &nbsp;
+                <strong>2.</strong> Open your email client (Gmail, Outlook, Apple Mail) &nbsp; | &nbsp;
+                <strong>3.</strong> Paste (Ctrl+V/Cmd+V) into your signature settings.
+            </p>
         </div>
 
     </main>
@@ -206,7 +173,6 @@
             const title = document.getElementById('input-title').value || '[Your Job Title Here]';
             const phone = document.getElementById('input-phone').value || '+1.860.304.3608';
             const email = document.getElementById('input-email').value || 'kfanelli@verasight.ai';
-            const logo = document.getElementById('input-logo').value;
 
             document.getElementById('sig-name').innerText = name;
             document.getElementById('sig-title').innerText = title;
@@ -217,10 +183,6 @@
             
             document.getElementById('sig-email').innerText = email;
             document.getElementById('sig-email-link').href = 'mailto:' + email;
-            
-            if(logo) {
-                document.getElementById('sig-logo').src = logo;
-            }
         }
 
         // Function to visually copy the signature (copies as Rich Text)
