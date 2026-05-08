@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signature Generator - Verasight</title>
+    <!-- Tailwind CSS for styling the generator page (does not affect the signature itself) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Montserrat Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        veraDarkBlue: '#0A2240',
+                        veraBlue: '#1A5FA7',
+                        veraLightBlue: '#8CCBF2',
+                        veraOrange: '#FF5C35',
+                        veraBg: '#f9f9f9'
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f0f4f8; }
+        /* Hides visual feedback elements during copy if needed */
+        .copy-notification {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .copy-notification.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-sans text-veraDarkBlue min-h-screen flex flex-col">
+
+    <!-- Page Header -->
+    <header class="bg-veraDarkBlue text-white py-6 shadow-md">
+        <div class="max-w-5xl mx-auto px-6 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider">VERASIGHT <span class="font-normal text-veraLightBlue">| Signatures</span></h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-5xl mx-auto w-full px-6 py-10">
+        
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Form -->
+            <div class="md:col-span-5 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+                <h2 class="text-xl font-bold mb-6 text-veraBlue border-b border-gray-200 pb-2">Your Details</h2>
+                
+                <form id="signature-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold mb-1" for="input-name">Full Name</label>
+                        <input type="text" id="input-name" placeholder="E.g.: K. Fanelli" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all" oninput="updateSignature()">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold mb-1" for="input-title">Job Title</label>
+                        <input type="text" id="input-title" placeholder="E.g.: Marketing Director" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all" oninput="updateSignature()">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-semibold mb-1" for="input-phone">Phone</label>
+                        <input type="text" id="input-phone" placeholder="+1.860.304.3608" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all" oninput="updateSignature()">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold mb-1" for="input-email">Email</label>
+                        <input type="email" id="input-email" placeholder="kfanelli@verasight.ai" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all" oninput="updateSignature()">
+                    </div>
+                    
+                    <div class="pt-4">
+                        <label class="block text-sm font-semibold mb-1 text-red-600">Logo Image URL (Advanced)</label>
+                        <p class="text-xs text-gray-500 mb-2">If the image is broken, paste the direct link (HTTPS) of the hosted company logo here.</p>
+                        <input type="text" id="input-logo" value="https://images.squarespace-cdn.com/content/v1/65a823e597148c279a528f80/38c11648-52c7-4340-9e6b-6f17e3f81e35/Logo+for+Site+Title.png" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-veraOrange focus:border-transparent outline-none transition-all text-sm" oninput="updateSignature()">
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Preview and Copy Button -->
+            <div class="md:col-span-7 flex flex-col">
+                <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-grow relative">
+                    <h2 class="text-xl font-bold mb-6 text-veraBlue border-b border-gray-200 pb-2">Preview</h2>
+                    
+                    <!-- SIGNATURE BOX (This is what will be copied) -->
+                    <div id="signature-box" class="p-6 bg-white border border-dashed border-gray-300 rounded-lg overflow-x-auto min-h-[200px] flex items-center">
+                        
+                        <!-- SIGNATURE CODE -->
+                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Montserrat', Arial, sans-serif; color: #0A2240; background-color: transparent;">
+                            <tr>
+                                <td style="padding-right: 20px; border-right: 2px solid #FF5C35; text-align: center; vertical-align: middle;">
+                                    <img id="sig-logo" 
+                                         src="https://images.squarespace-cdn.com/content/v1/65a823e597148c279a528f80/38c11648-52c7-4340-9e6b-6f17e3f81e35/Logo+for+Site+Title.png" 
+                                         alt="Verasight Logo" 
+                                         width="140" 
+                                         style="display: block; width: 140px; max-width: 140px; border: none; text-decoration: none;">
+                                </td>
+                                
+                                <td style="padding-left: 20px; vertical-align: middle;">
+                                    <h2 id="sig-name" style="margin: 0 0 2px 0; font-size: 18px; color: #0A2240; font-weight: 700; letter-spacing: 0.5px;">[Your Name Here]</h2>
+                                    
+                                    <p style="margin: 0 0 12px 0; font-size: 13px; color: #1A5FA7; font-weight: 400;">
+                                        <span id="sig-title">[Your Job Title Here]</span> &nbsp;|&nbsp; <strong style="color: #0A2240;">Verasight LLC</strong>
+                                    </p>
+                                    
+                                    <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Montserrat', Arial, sans-serif; font-size: 12px; color: #0A2240; line-height: 1.6;">
+                                        <tr>
+                                            <td style="padding-right: 8px; font-weight: 700; color: #FF5C35;">T:</td>
+                                            <td>
+                                                <a id="sig-phone-link" href="tel:+18603043608" style="color: #0A2240; text-decoration: none;"><span id="sig-phone" style="color: #0A2240;">+1.860.304.3608</span></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-right: 8px; font-weight: 700; color: #FF5C35;">E:</td>
+                                            <td>
+                                                <a id="sig-email-link" href="mailto:kfanelli@verasight.ai" style="color: #0A2240; text-decoration: none;"><span id="sig-email" style="color: #0A2240;">kfanelli@verasight.ai</span></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-right: 8px; font-weight: 700; color: #FF5C35;">W:</td>
+                                            <td>
+                                                <a href="https://www.verasight.ai" target="_blank" style="color: #1A5FA7; text-decoration: none; font-weight: 700;"><span style="color: #1A5FA7;">www.verasight.ai</span></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- END OF SIGNATURE CODE -->
+
+                    </div>
+                </div>
+
+                <!-- Button and Notification -->
+                <div class="mt-6 flex flex-col items-center">
+                    <button onclick="copySignature()" class="bg-veraOrange hover:bg-[#e64b26] text-white font-bold py-4 px-8 rounded-full shadow-lg transform transition hover:scale-105 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                        </svg>
+                        Copy Signature
+                    </button>
+                    
+                    <div id="copy-msg" class="copy-notification mt-3 text-green-600 font-semibold bg-green-100 px-4 py-2 rounded-full text-sm">
+                        Copied to clipboard!
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="mt-12 bg-white p-8 rounded-xl shadow-sm border border-gray-100">
+            <h3 class="text-lg font-bold text-veraDarkBlue mb-4">How to install your signature:</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                <div>
+                    <h4 class="font-bold text-veraBlue mb-2">Gmail</h4>
+                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
+                        <li>Click "Copy Signature" above.</li>
+                        <li>In Gmail, click the Settings (gear) icon > "See all settings".</li>
+                        <li>Scroll down to the "Signature" section and click "Create new".</li>
+                        <li>Paste (Ctrl+V / Cmd+V) into the text box.</li>
+                        <li>Save changes at the bottom of the page.</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 class="font-bold text-veraBlue mb-2">Apple Mail (Mac)</h4>
+                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
+                        <li>Click "Copy Signature" above.</li>
+                        <li>Open Mail > Preferences/Settings > Signatures.</li>
+                        <li>Create a new signature (+).</li>
+                        <li>Uncheck "Always match my default message font".</li>
+                        <li>Paste (Cmd+V) into the box (it might look slightly off here, but sends perfectly).</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 class="font-bold text-veraBlue mb-2">Outlook</h4>
+                    <ol class="list-decimal pl-4 space-y-1 text-gray-600">
+                        <li>Click "Copy Signature" above.</li>
+                        <li>In Outlook, go to File > Options > Mail > Signatures.</li>
+                        <li>Click "New".</li>
+                        <li>Paste (Ctrl+V / Cmd+V) into the edit area.</li>
+                        <li>If a paste options icon appears, choose "Keep Source Formatting".</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Function to update the preview in real-time
+        function updateSignature() {
+            const name = document.getElementById('input-name').value || '[Your Name Here]';
+            const title = document.getElementById('input-title').value || '[Your Job Title Here]';
+            const phone = document.getElementById('input-phone').value || '+1.860.304.3608';
+            const email = document.getElementById('input-email').value || 'kfanelli@verasight.ai';
+            const logo = document.getElementById('input-logo').value;
+
+            document.getElementById('sig-name').innerText = name;
+            document.getElementById('sig-title').innerText = title;
+            
+            document.getElementById('sig-phone').innerText = phone;
+            // Clean phone number for the tel: link (remove spaces etc.)
+            document.getElementById('sig-phone-link').href = 'tel:' + phone.replace(/[^0-9+]/g, ''); 
+            
+            document.getElementById('sig-email').innerText = email;
+            document.getElementById('sig-email-link').href = 'mailto:' + email;
+            
+            if(logo) {
+                document.getElementById('sig-logo').src = logo;
+            }
+        }
+
+        // Function to visually copy the signature (copies as Rich Text)
+        function copySignature() {
+            const signatureBox = document.getElementById('signature-box');
+            const range = document.createRange();
+            const selection = window.getSelection();
+            
+            // Clear previous selections
+            selection.removeAllRanges();
+            
+            // Select table content
+            range.selectNodeContents(signatureBox);
+            selection.addRange(range);
+            
+            try {
+                // Copy formatted content
+                document.execCommand('copy');
+                
+                // Show success message
+                const msg = document.getElementById('copy-msg');
+                msg.classList.add('show');
+                setTimeout(() => {
+                    msg.classList.remove('show');
+                }, 3000);
+            } catch (err) {
+                alert('Could not copy automatically. Please select the text and press Ctrl+C/Cmd+C.');
+            }
+            
+            // Remove selection so it doesn't stay blue
+            selection.removeAllRanges();
+        }
+    </script>
+</body>
+</html>
